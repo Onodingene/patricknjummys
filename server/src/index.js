@@ -7,13 +7,9 @@ import customCartRoutes from "./routes/customCartRoutes.js";
 const app = express();
 
 // ✅ MIDDLEWARE (must be before routes)
-app.use(cors({
-  origin: ['http://localhost:8080', 'http://localhost:3000'], // Allow frontend origins
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed methods
-  allowedHeaders: ['Content-Type'], // Allowed headers
-}));
+app.use(cors());
 app.use(express.json()); // parses JSON body
-app.use(express.urlencoded({ extended: true })); // handles form submissions
+// app.use(express.urlencoded({ extended: true })); // handles form submissions
 
 // ✅ ROUTES
 app.use("/api/orders", orderRoutes);

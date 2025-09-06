@@ -44,6 +44,7 @@ const orderSchema = Joi.object({
     "number.min": "Amount cannot be negative",
   }),
   order_note: Joi.string().trim().allow("").optional(),
+  delivery_method:Joi.string().trim().allow("").optional(),
 });
 
 export const createOrder = async (req, res) => {

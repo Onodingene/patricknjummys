@@ -36,15 +36,23 @@ async function initTables() {
     `);
 
     await conn.query(`
-      CREATE TABLE IF NOT EXISTS cart (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        user_id INT NOT NULL,
-        title VARCHAR(150) NOT NULL,
-        price DECIMAL(10,2) NOT NULL,
-        quantity INT NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        order_type VARCHAR(50)  NOT NULL
-      )
+    CREATE TABLE custom_cart (
+    id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    cart_id VARCHAR(50) NOT NULL,
+    inches INT,
+    num_layers INT,
+    num_flavors INT,
+    flavors JSON,
+    gender VARCHAR(20),
+    topper_message VARCHAR(100),
+    price DECIMAL(10,2),
+    quantity INT,
+    decoration VARCHAR(255),
+    image MEDIUMBLOB,
+    order_note TEXT,
+    created_at TIMESTAMP,
+    order_type VARCHAR(50)
+);
     `);
 
     console.log("✅ Tables ensured");
