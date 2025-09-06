@@ -135,10 +135,8 @@ const Checkout: React.FC = () => {
     setMessage('');
 
     try {
-      // Simulate payment processing
-      await new Promise(resolve => setTimeout(resolve, 2000));
       
-      // Simulate successful payment
+      
       const paymentReference = `PAY_${new Date().getTime()}`;
       console.log("🚀 Payment successful, reference:", paymentReference);
       
@@ -152,11 +150,11 @@ const Checkout: React.FC = () => {
       console.log("📦 Order data to be saved:", orderData);
       
       // Here you would normally send to your backend:
-      // fetch('http://localhost:5000/api/orders', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(orderData)
-      // })
+      fetch('http://localhost:5000/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderData)
+      })
       
       const mockOrderId = Math.floor(Math.random() * 10000);
       setMessage(`Order created successfully! Order ID: ${mockOrderId}`);

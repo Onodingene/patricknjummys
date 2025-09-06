@@ -1,9 +1,6 @@
-
 import db from "../config/database.js";
 
-// Create new order
-export const addOrder = async (name, house_address, city, state, email, phone_number, amount, order_note) => {
-  // Sanitize inputs
+export const addOrder = async (name, house_address, city, state, email, phone_number, amount, order_note, payment_reference, order_type) => {
   const sanitizedData = [
     name?.trim() || null,
     house_address?.trim() || null,
@@ -11,17 +8,19 @@ export const addOrder = async (name, house_address, city, state, email, phone_nu
     state?.trim() || null,
     email?.trim().toLowerCase() || null,
     phone_number?.replace(/[\s-]/g, '') || null,
-    Number(amount).toFixed(2), // Ensure 2 decimal places for DECIMAL(10,2)
+    Number(amount).toFixed(2),
     order_note?.trim() || null,
+    payment_reference || null, // New field
+    order_type || "standard", // Default to "standard" if not provided
   ];
 
-  console.log("addOrder sanitized data:", sanitizedData); // Log for debugging
+  console.log("addOrder sanitized data:", sanitizedData);
 
   try {
     const [result] = await db.execute(
       `INSERT INTO orders 
-        (name, house_address, city, state, email, phone_number, amount, order_note) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        (name, house_address, city, state, email, phone_number, amount, order_note, payment_reference, order_type, created_at) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())`,
       sanitizedData
     );
     return result;
@@ -31,23 +30,20 @@ export const addOrder = async (name, house_address, city, state, email, phone_nu
       code: error.code,
       stack: error.stack,
     });
-    throw error; // Re-throw to be caught in controller
+    throw error;
   }
 };
 
-// Get all orders
 export const getOrders = async () => {
   return db.execute("SELECT * FROM orders ORDER BY created_at DESC");
 };
 
-// Get single order by ID
 export const getOrderById = async (id) => {
   const [rows] = await db.execute("SELECT * FROM orders WHERE id = ?", [id]);
   return rows.length > 0 ? rows[0] : null;
 };
 
-// Update order
-export const updateOrder = async (id, name, house_address, city, state, email, phone_number, amount, order_note) => {
+export const updateOrder = async (id, name, house_address, city, state, email, phone_number, amount, order_note, payment_reference, order_type) => {
   const sanitizedData = [
     name?.trim() || null,
     house_address?.trim() || null,
@@ -55,20 +51,21 @@ export const updateOrder = async (id, name, house_address, city, state, email, p
     state?.trim() || null,
     email?.trim().toLowerCase() || null,
     phone_number?.replace(/[\s-]/g, '') || null,
-    Number(amount).toFixed(2), // Ensure 2 decimal places
+    Number(amount).toFixed(2),
     order_note?.trim() || null,
+    payment_reference || null,
+    order_type || "standard",
     id
   ];
 
   return db.execute(
     `UPDATE orders 
-     SET name = ?, house_address = ?, city = ?, state = ?, email = ?, phone_number = ?, amount = ?, order_note = ?
+     SET name = ?, house_address = ?, city = ?, state = ?, email = ?, phone_number = ?, amount = ?, order_note = ?, payment_reference = ?, order_type = ?
      WHERE id = ?`,
     sanitizedData
   );
 };
 
-// Delete order
 export const removeOrder = async (id) => {
   return db.execute("DELETE FROM orders WHERE id = ?", [id]);
 };
